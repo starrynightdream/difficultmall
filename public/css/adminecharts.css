@@ -1,0 +1,27 @@
+html,body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+/*°´Å¥*/
+.adindex_btn{
+	display: block;
+	width: 100%;
+}
+.adindex_btn>.btn:hover{
+	-webkit-transform: scale(1.04,1.04);
+	-webkit-transition: 1s -webkit-transform; /*¼æÈÝ¹È¸è safari*/
+		
+	-moz-transform: scale(1.04,1.04);
+	-moz-transition: 1s -moz-transform; /*¼æÈÝ»ðºü*/
+		
+	-ms-transform: scale(1.04,1.04);
+	-ms-transition: 1s -ms-transform; /*¼æÈÝie*/
+		
+	-o-transform: scale(1.04,1.04);
+	-o-transition: 1s -o-transform; /*¼æÈÝopera*/
+		
+	transition-duration: 1s;
+}
+

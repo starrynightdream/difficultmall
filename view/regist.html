@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<!-- <%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%> -->
+
+
+<html>
+	<head>
+		<title>欢迎注册EasyMall</title>
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="/css/regist.css"/>
+		<script  type="text/javascript" src="/js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+
+				$("#login").click(function(){
+					window.location.href="/index/login";
+				})
+				
+				//给所有输入框添加失去输入焦点的事件  当失去输入焦点时检查输入是否为空或者两次密码是否一致，或者邮箱格式是否正确。
+				$("input[name='username']").blur(function(){
+					if(!formobj.checkNull("username", "用户名不能为空！")){
+						return false;						
+					}else{
+						var url="/user/checkUser";
+						var username=$("input[name='username']").val();
+						$.post(url,{"username":username},
+							function(data){
+								$("#username_msg").html(data);
+							}
+						);
+					}
+				});
+				$("input[name='password']").blur(function(){
+					formobj.checkNull("password", "密码不能为空！");	
+					formobj.checkPassword("password","两次密码输入不一致");
+					formobj.checkPasswordLen("password","密码长度应不小于3")
+				});
+				$("input[name='password2']").blur(function(){
+					formobj.checkNull("password2", "确认密码不能为空！");		
+					formobj.checkPassword("password","两次密码输入不一致");
+				});
+				$("input[name='nickname']").blur(function(){
+					formobj.checkNull("nickname", "昵称不能为空！");
+				});
+			});
+			
+			/*注册表单的js校验*/
+			var formobj={
+				"checkForm":function(){
+					//1.非空校验				
+					var res1=this.checkNull("username", "用户名不能为空！");
+					var res2=this.checkNull("password", "密码不能为空！");
+					var res3=this.checkNull("password2", "确认密码不能为空！");
+					var res4=this.checkNull("nickname", "昵称不能为空！");
+					var res5=this.checkPassword("password","两次密码输入不一致");
+					var res6=this.checkPasswordLen("password","密码长度应不小于3");
+					return res1 && res2 && res3 && res4 && res5 && res6;
+				},
+				"checkNull":function(name,msg){
+					var value=$("input[name='"+name+"']").val();  
+					this.setMsg(name,"");
+					if(value.trim()==""){
+						this.setMsg(name, msg);
+						return false;
+					}
+					return true;
+				},
+				/* 设置错误提示消息  */
+				"setMsg":function(name,msg){
+					var $span=$("input[name='"+name+"']").nextAll("span");	
+					$span.html(msg);
+					$span.css("color","red");
+				},
+				//密码长度验证
+				"checkPasswordLen":function(name,msg){
+					var $passw=$("input[name='password']").val();
+					 if($passw.length<3){
+							this.setMsg(name,msg);
+							return false;
+						}
+					 else return true;
+				},
+				
+				//2.两次密码是否一致校验
+				"checkPassword":function(name,msg){
+					var pwd=$("input[name='"+name+"2']").val().trim();
+					var pwd2=$("input[name='"+name+"']").val().trim();
+					
+				  	if( pwd!="" && pwd2!=""){
+				  		//清空之前的消息。
+						this.setMsg(name+"2","");
+				  		if(pwd!= pwd2){
+							this.setMsg(name+"2", msg);
+							return false;
+						}
+				  	}
+				  	return true;
+				},
+				//3.邮箱格式校验
+				"checkEmail":function(name,msg){
+					var email=$("input[name='"+name+"']").val().trim();
+					var regExp=/^\w+@\w+(\.\w+)+$/;
+					if(email!=""){
+						if(!regExp.test(email)){
+							this.setMsg(name, msg);
+							return false;
+						}
+					}
+					return true;
+				}
+				
+				
+			};
+			function getSession(){
+				var url = '/session';
+				$.post(url, function(data){
+					$('#message').html(data.msg || '');
+				});
+			}
+			</script>
+	</head>
+	<body>
+	<!-- onsubmit事件在表单提交时触发，该事件会根据返回值决定是否提交表单，  
+	          如果onsubmit="return true"会继续提交表单，如果onsubmit="return false" 
+	          表单将不会提交 
+	     onsubmit="" 引号中报错并不是因为代码有问题，而是MyEclipse工具在检查语法认为这个代码有问题。其实没有错误     
+	-->
+	<!-- <input id="PageContext" type="hidden" value="${pageContext.request.contextPath}" /> -->
+		<form onsubmit="return formobj.checkForm();" action="/user/regist" method="POST">
+			<h1>欢迎注册EasyMall</h1>
+			<table>
+				<tr>
+					<td colspan="2" style="color:red;text-align:center;"><span id="message"></span></td>
+				</tr>
+			
+				<tr>
+					<td class="tds">用户名：</td>
+					<td>
+						<input type="text" name="username" />
+						<span id="username_msg"></span>
+					</td>
+					
+				</tr>
+				<tr>
+					<td class="tds">密码：</td>
+					<td>
+						<input type="password" name="password" />
+						<span></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="tds">确认密码：</td>
+					<td>
+						<input type="password" name="password2" />
+						<span></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="tds">昵称：</td>
+					<td>
+						<input type="text" name="nickname" />
+						<span></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="sub_td" colspan="2" class="tds">
+						<input type="submit" value="注册用户"/>&nbsp;&nbsp;&nbsp;
+						<input type="button" value="登录" id="login" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+	</body>
+</html>

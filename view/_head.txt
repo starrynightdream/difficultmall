@@ -1,0 +1,101 @@
+<link rel="stylesheet" href="/css/head.css"/>
+<link rel="stylesheet" href="/css/bootstrap.css"/>
+<script src="/js/jquery.min.js"></script>
+
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+
+<script>
+	$(function(){
+		onDetails();
+		getSession();
+	});
+	function onDetails(){
+		var $pageContext = $("#PageContext").val();
+		
+		var url=$pageContext+"/productsclass";
+		//console.log(url);
+
+		
+		$.post(url,function(data){
+			$("#head_nav").html(""); //清空ul标签下的html代码
+			var arr=new Array();
+			arr=data.split(',');
+
+			var dataOptions='<li class="nav-item"><a href="'+$pageContext+'/prodlist">全部商品</a></li>';
+			
+			for(var i=0;i<arr.length;i++){
+				dataOptions += '<li class="nav-item">';
+				var name=encodeURIComponent(encodeURIComponent(arr[i]));   //二次编码
+				dataOptions += '<a href="'+$pageContext+"/prodclass/"+name+'">'+arr[i]+"</a></li>";
+			}
+			$("#head_nav").html(dataOptions); 
+			
+		});
+
+	}
+	var sessionFromServe;
+	function getSession(){
+		var url = '/session';
+		$.post(url, function(data){
+			if (data.isLogin){
+				$('#changeUser').html(
+					'"欢迎'+ data.uname +
+					'回来~~&nbsp;"' + 
+					'<a href="/index/logout">退出</a>'
+				);
+			}else{
+				$('#changeUser').html(
+					'<a href="/index/login">登录</a>	 &nbsp;' + 
+					'<a href="/index/regist">注册</a>	'
+				);
+			}
+		})
+	}
+</script>
+<div id="common_head">
+	<div id="line1">
+		<div id="content">
+		
+		 <input id="PageContext" type="hidden" value="/productsController" />
+		 <div id="changeUser"></div>
+		  <!-- <c:if test="${ empty sessionScope.user}">
+		 	<a href="/index/login">登录</a>	 &nbsp;	
+			<a href="/index/regist">注册</a>	
+			<a href="/adminuser/login">后台登录</a>		 
+		 </c:if>	
+		 	 
+		 <c:if test="${ !(empty sessionScope.user) }">
+		 	 	"欢迎${ sessionScope.user.username }回来~~&nbsp;"
+		 	<a href="/index/logout">退出</a>		 
+		 </c:if>			 -->
+		</div>	
+	</div>
+	<div id="line2">
+		<img id="logo" src="/img/head/logo.jpg"/>
+		<input type="text" name=""/>
+		<input type="button" value="搜 索" />
+		<span id="goto">
+				<a id="goto_order" href="/order/showorder">我的订单</a>
+				<a id="goto_cart" href="/cart/showcart">我的购物车</a>
+		</span>
+		<img id="erwm" src="/img/head/qr.jpg"/>
+	</div>
+	<div id="line3">
+		<div id="content">
+			<ul class="nav" id="head_nav">  
+				<!--  
+				<li><a href="">首页</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodlist">全部商品</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/手机数码">手机数码</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/电脑平板">电脑平板</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/家用电器">家用电器</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/汽车用品">汽车用品</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/食品饮料">食品饮料</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/图书杂志">图书杂志</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/服装服饰">服装服饰</a></li>
+				<li><a href="${pageContext.request.contextPath }/prodclass/理财产品">理财产品</a></li>
+			-->
+			</ul>
+		</div>
+	</div>
+</div>

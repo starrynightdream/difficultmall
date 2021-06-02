@@ -1,0 +1,32 @@
+/*Çå³ý.foot_ul>liµÄscale*/
+.foot_ul>li:hover{
+	-webkit-transform: scale(1,1);
+	-webkit-transition: 1s -webkit-transform; /*¼æÈÝ¹È¸è safari*/
+	
+	-moz-transform: scale(1,1);
+	-moz-transition: 1s -moz-transform; /*¼æÈÝ»ðºü*/
+	
+	-ms-transform: scale(1,1);
+	-ms-transition: 1s -ms-transform; /*¼æÈÝie*/
+	
+	-o-transform: scale(1,1);
+	-o-transition: 1s -o-transform; /*¼æÈÝopera*/
+	
+	transition-duration: 0.5s;
+}
+
+/*µ×²¿ÎÄ×ÖµÄÐü¸¡·Å´ó*/
+.img_logo:hover{
+	-webkit-transform: scale(1.2,1.2);
+	-webkit-transition: 1s -webkit-transform; /*¼æÈÝ¹È¸è safari*/
+	
+	-moz-transform: scale(1.2,1.2);
+	-moz-transition: 1s -moz-transform; /*¼æÈÝ»ðºü*/
+	
+	-ms-transform: scale(1.2,1.2);
+	-ms-transition: 1s -ms-transform; /*¼æÈÝie*/
+	
+	-o-transform: scale(1.2,1.2);
+	-o-transition: 1s -o-transform; /*¼æÈÝopera*/
+	transition-duration: 0.5s;
+}

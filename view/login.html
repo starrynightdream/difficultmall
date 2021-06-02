@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="/css/login.css"/>
+		<script  type="text/javascript" src="/js/jquery.min.js"></script>
+		<title>EasyMall欢迎您登录</title>
+	</head>
+	
+	<script>
+	/* 点击图片换一张验证码  */
+	//浏览器只要发现图片的src地址变化，图片就会变化。
+	$(function(){
+
+		$("#reg").click(function(){
+			
+			window.location.href="/index/regist";
+		})
+		
+		//给所有输入框添加失去输入焦点的事件  当失去输入焦点时检查输入是否为空或者两次密码是否一致，或者邮箱格式是否正确。
+		$("input[name='username']").blur(function(){
+			formobj.checkNull("username", "用户名不能为空！");
+		});
+		$("input[name='password']").blur(function(){
+			formobj.checkNull("password", "密码不能为空！");	
+		});
+		
+		getSession();
+	});
+	
+	/*注册表单的js校验*/
+	var formobj={
+		"checkForm":function(){
+			//1.非空校验				
+			var res1=this.checkNull("username", "用户名不能为空！");
+			var res2=this.checkNull("password", "密码不能为空！");
+			return res1 && res2;				
+		},
+		"checkNull":function(name,msg){
+			var value=$("input[name='"+name+"']").val();  
+			this.setMsg(name,"");
+			if(value.trim()==""){
+				this.setMsg(name, msg);
+				return false;
+			}
+			return true;
+		},
+		/* 设置错误提示消息  */
+		"setMsg":function(name,msg){
+			var $span=$("input[name='"+name+"']").nextAll("span");	
+			$span.html(msg);
+			$span.css("color","red");
+			$span.css("font-size","20px");
+		}
+	};
+
+	function getSession(){
+		var url = '/session';
+		$.post(url, function(data){
+			$('#message').html(data.msg || '');
+		});
+	}
+	</script>
+
+	
+	<body>
+
+		<h1>欢迎登录EasyMall</h1>
+		<form onsubmit="return formobj.checkForm();" action="/user/login" method="POST">			
+			<table>
+				<tr>	
+				 	
+					<td class="tdx">用户名：</td>
+					<td><input type="text" name="username" value=""/> 
+						<span></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="tdx">密&nbsp;&nbsp; 码：</td>
+					<td>
+						<input type="password" name="password" value=""/>
+						<span></span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2" style="text-align:center">
+						<input type="submit" value="登录"/>&nbsp;&nbsp;&nbsp;
+						<input type="button" id="reg" value="注册" />
+					</td>	
+				</tr>
+				<tr><td colspan="2" style="color:red;text-align:center;">
+					<span id="message"></span>
+				</td></tr>
+			</table>
+		</form>		
+	
+	</body>
+</html>
+
