@@ -6,8 +6,7 @@
 
 <script>
 	$(function(){
-		onDetails();
-		getSession();
+		// onDetails();
 	});
 	function onDetails(){
 		var $pageContext = $("#PageContext").val();
@@ -33,7 +32,6 @@
 		});
 
 	}
-	var sessionFromServe;
 	function getSession(){
 		var url = '/session';
 		$.post(url, function(data){
@@ -57,7 +55,13 @@
 		<div id="content">
 		
 		 <input id="PageContext" type="hidden" value="/productsController" />
-		 <div id="changeUser"></div>
+		 <div id="changeUser">
+		 	<% if (session.isLogin) {%>
+				 欢迎 <%= session.uname %> 回来~~&nbsp; <a href="/index/logout">退出</a>
+			<% } else { %>
+				<a href="/index/login">登录</a>	 &nbsp;<a href="/index/regist">注册</a>	 
+			<% } %>
+		 </div>
 		  <!-- <c:if test="${ empty sessionScope.user}">
 		 	<a href="/index/login">登录</a>	 &nbsp;	
 			<a href="/index/regist">注册</a>	
@@ -70,11 +74,10 @@
 		 </c:if>			 -->
 		</div>	
 	</div>
-	<% let test = 3 %>
 	<div id="line2">
 		<img id="logo" src="/img/head/logo.jpg"/>
 		<input type="text" name=""/>
-		<input type="button" value="<%= test %>搜 索" />
+		<input type="button" value="搜 索" />
 		<span id="goto">
 				<a id="goto_order" href="/order/showorder">我的订单</a>
 				<a id="goto_cart" href="/cart/showcart">我的购物车</a>
@@ -84,6 +87,13 @@
 	<div id="line3">
 		<div id="content">
 			<ul class="nav" id="head_nav">  
+				<li class="nav-item"><a href="/productsController/prodlist">全部商品</a></li>
+				<% for(let cs of allClass) { %>
+					<% let ccover =encodeURIComponent(encodeURIComponent(cs))  %>
+					<li class="nav-item"> 
+						<a href="/productsController/prodclass/<%= ccover %>"> <%= cs %> </a>
+					</li>
+				<% }%>
 				<!--  
 				<li><a href="">首页</a></li>
 				<li><a href="${pageContext.request.contextPath }/prodlist">全部商品</a></li>

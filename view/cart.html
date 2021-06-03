@@ -1,12 +1,11 @@
-﻿<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-		<link href="${ pageContext.request.contextPath }/css/cart.css" rel="stylesheet" type="text/css">
+		<link href="/css/cart.css" rel="stylesheet" type="text/css">
 	
 <!-- 引入jQuery函数库 -->
-<script type="text/javascript" src="${ pageContext.request.contextPath }/js/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type="text/javascript">
 	/* 文档就绪函数 */
 	$(function() {
@@ -29,7 +28,7 @@
 			//>>获取cartID和购买数量(newBuyNum)
 			var cartID = $buyNumInp.attr("id");
 			//>>发送ajax请求
-			$.post("${ pageContext.request.contextPath }/cart/updateBuyNum", {
+			$.post("/cart/updateBuyNum", {
 				"cartID" : cartID,
 				"buyNum" : newBuyNum
 			});
@@ -74,7 +73,7 @@
 			var cartID = $buyNumInp.attr("id");
 			
 			//>>发送ajax请求
-			$.post("${ pageContext.request.contextPath }/cart/updateBuyNum", {
+			$.post("/cart/updateBuyNum", {
 				"cartID" : cartID,
 				"buyNum" : newBuyNum
 			});
@@ -96,7 +95,7 @@
 			$("input:checked").each(function(){
 				if($(this).attr("class") != "allC"){	
 					var cartID=$(this).attr("id"); 				
-					$.post("${ pageContext.request.contextPath }/cart/delCart",
+					$.post("/cart/delCart",
 							{"cartID":cartID});	
 					$(this).parents("ul").remove();
 				}
@@ -119,7 +118,7 @@
 			var cartID = $(this).attr("id");
 						
 			//2.利用ajax请求删除购物车中指定id的商品(-1后台会删除该商品)
-			$.post("${ pageContext.request.contextPath }/cart/delCart",{"cartID":cartID});				
+			$.post("/cart/delCart",{"cartID":cartID});				
 					
 			//3.删除当前页面中的商品
 			$(this).parents("ul").remove();
@@ -143,8 +142,8 @@
 			});
 			var cartIds=arr.toString();
 			//使用Ajax进行跳转，并带参数
-		$.post("${ pageContext.request.contextPath }/order/order_add",{"cartIds":cartIds},function(){
-			window.location="${pageContext.request.contextPath}/order/order_add?cartIds="+cartIds;
+		$.post("/order/order_add",{"cartIds":cartIds},function(){
+			window.location="/order/order_add?cartIds="+cartIds;
 			});				
 		});
 
@@ -155,7 +154,7 @@
 	</head>
 	<body>
 	
-	<%@ include file="_head.jsp" %>
+		<%-HEAD %>
 		<div id="wrap">
 			<!-- 标题信息 -->
 			<ul id="title">
@@ -171,28 +170,32 @@
 			</ul>
 
 			<!-- 购物信息 -->
-			<c:set var="sum" value="0" />
-			<c:forEach items="${carts }" var="cart">
+			<!-- <c:set var="sum" value="0" /> -->
+			<% let sum = 0; %>
+			<!-- <c:forEach items="${carts }" var="cart"> -->
+			<% for (let cart of carts) { %>
 			<ul class="prods">
 				<li>
-					<input type="checkbox" class="prodC" id="${cart.cartID }"/> 
+					<input type="checkbox" class="prodC" id="<%= cart.cartID %>"/> 
 				</li>
 				<li class="li_prod">
-					<img src="${ pageContext.request.contextPath }${cart.imgurl}" width="90" height="90" class="prodimg" />
-					<span class="prodname">${cart.name }</span>
+					<img src="<%= cart.imgurl %>" width="90" height="90" class="prodimg" />
+					<span class="prodname"><%= cart.name %></span>
 				</li>
-				<li class="li_price">${cart.price }</li>
+				<li class="li_price"><%= cart.price %></li>
 				<li>
 					<a href="javascript:void(0)" class="delNum" >-</a>
-					<input class="buyNumInp" id="${cart.cartID }" type="text"
-						 readonly="readonly" value="${cart.num }" />
+					<input class="buyNumInp" id="<%= cart.cartID %>" type="text"
+						 readonly="readonly" value="<%= cart.num %>" />
 					<a href="javascript:void(0)" class="addNum" >+</a>
 				</li>
-				<li class="sum_price">${cart.price*cart.num }</li>
-				<li><a id="${cart.cartID }" class="delProd" href="javascript:void(0)">删除</a></li>
+				<li class="sum_price"><%= cart.price*cart.num %></li>
+				<li><a id="<%= cart.cartID %>" class="delProd" href="javascript:void(0)">删除</a></li>
 			</ul>
-			<c:set var="sum" value="${sum+cart.price*cart.num }"></c:set>
-			</c:forEach>
+			<!-- <c:set var="sum" value="<%= sum+cart.price*cart.num %>"></c:set> -->
+			<% sum += cart.price * cart.num %>
+			<!-- </c:forEach> -->
+			<% } %>
 			<!-- 总计条 -->
 			<div id="total">
 				<div id="total_1">
@@ -202,7 +205,7 @@
 					<div id="div_sum">
 						<span id="span_1">总价：</span>
 						<span>￥</span>
-						<span id="span_2" class="total_sum_price">${sum }</span>&nbsp;&nbsp;&nbsp;
+						<span id="span_2" class="total_sum_price"><%= sum %></span>&nbsp;&nbsp;&nbsp;
 					</div>
 				</div>
 				<div id="total_2">	
@@ -210,6 +213,6 @@
 				</div>
 			</div>
 		</div>
-	<%@ include file="_foot.jsp" %>
+		<%- FOOT %>
 	</body>
 </html>

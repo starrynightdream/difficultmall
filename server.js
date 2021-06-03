@@ -52,17 +52,22 @@ Order.addOrder = async (cartIDs, orders) =>{
     let sum = 0;
     for (let carID of cartIDs){
         cid = Number.parseInt(carID);
-        mycart = await dao.findByCartID(cid);
+        let mycart = {...po.MyCart};
+        mycart = await dao.findByCartID({cartID: cid});
+        mycart = mycart[0];
+        if (!mycart){
+            break;
+        }
 
         sum += mycart.price * mycart.num;
 
         orderItem = {...po.OrderItem};
         orderItem.order_id = orders.id;
         orderItem.product_id = mycart.pid;
-        orderItem.buynum = buynum;
+        orderItem.buynum = mycart.num;
 
         await dao.addOrderItem(orderItem);
-        await dao.delCart(cid);
+        await dao.delCart({cartID:cid});
     }
     orders.money = sum;
     await dao.addOrder(orders);

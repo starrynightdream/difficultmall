@@ -6,14 +6,15 @@ const path = require('path');
 
 const express = require('express');
 const server = require('../server');
+const mutil = require('../util');
 
 const wantUrl = 'productsController';
 
 const router = express.Router();
 let session = undefined;
 
-let HEAD = '';
-let FOOT= '';
+let HHEAD = '';
+let HFOOT= '';
 
 router.post('/productsclass', async (req, res) =>{
     let data = await server.Products.allcategorys();
@@ -42,30 +43,36 @@ router.use('/prodlist', async (req, res) =>{
         name, minPrice, maxPrice, categorys, products 
     };
     
-    fs.readFile( path.join( __dirname, '../view/prod_list.html'), 'utf-8', (err, data) =>{
+    let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
+    res.render('prod_list', {HEAD, FOOT, 'data': req.session.data});
 
-        if (err){
-            next();
-            return;
-        }
-        data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
-        res.send(data);
-    });
+    // fs.readFile( path.join( __dirname, '../view/prod_list.html'), 'utf-8', (err, data) =>{
+
+    //     if (err){
+    //         next();
+    //         return;
+    //     }
+    //     data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
+    //     res.send(data);
+    // });
 });
 router.get('/prodInfo', async (req, res) =>{
     let product = await server.Products.oneProduct(req.query.pid);
     product = product[0];
     req.session.product = product;
 
-    fs.readFile( path.join( __dirname, '../view/prod_info.html'), 'utf-8', (err, data) =>{
+    let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
+    res.render('prod_info', {HEAD, FOOT, 'data': req.session.data});
 
-        if (err){
-            next();
-            return;
-        }
-        data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
-        res.send(data);
-    });
+    // fs.readFile( path.join( __dirname, '../view/prod_info.html'), 'utf-8', (err, data) =>{
+
+    //     if (err){
+    //         next();
+    //         return;
+    //     }
+    //     data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
+    //     res.send(data);
+    // });
 });
 router.get('/prodclass/:proclass', async (req, res) =>{
     let proclass = req.params.proclass;
@@ -78,19 +85,22 @@ router.get('/prodclass/:proclass', async (req, res) =>{
 
     // res.render('prod_list', {head: HEAD, foot: FOOT});
 
-    fs.readFile( path.join( __dirname, '../view/prod_list.html'), 'utf-8', (err, data) =>{
+    let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
+    res.render('prod_list', {HEAD, FOOT, 'data': req.session.data});
 
-        if (err){
-            next();
-            return;
-        }
-        data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
-        res.send(data);
-    });
+    // fs.readFile( path.join( __dirname, '../view/prod_list.html'), 'utf-8', (err, data) =>{
+
+    //     if (err){
+    //         next();
+    //         return;
+    //     }
+    //     data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
+    //     res.send(data);
+    // });
 });
 
 const inject = ({appHead, appFoot}) =>{
-    HEAD = appHead; FOOT = appFoot;
+    HHEAD = appHead; HFOOT = appFoot;
 }
 
 module.exports = {

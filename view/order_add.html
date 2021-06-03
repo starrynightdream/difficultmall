@@ -29,12 +29,12 @@
 				<!-- <c:forEach items="${carts }" var="cart"> -->
 				
 				<tr>
-					<td><img src="${pageContext.request.contextPath }${cart.imgurl}" 
+					<td><img src="<%= cart.imgurl %>" 
 					width="90" height="90" class="prodimg" /></td>
-					<td>${cart.name }</td>
-					<td>￥${cart.price }元</td>
-					<td>${cart.num }件</td>
-					<td>￥${cart.price*cart.num }元</td>
+					<td><%= cart.name %></td>
+					<td>￥<%= cart.price %>元</td>
+					<td><%= cart.num %>件</td>
+					<td>￥<%= cart.price*cart.num %>元</td>
 				</tr>
 				
 				<!-- <c:set var="sum" value="${sum+cart.price*cart.num }"></c:set> -->

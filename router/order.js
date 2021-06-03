@@ -2,36 +2,73 @@
  * 订单控制
  */
 const express = require('express');
+const ejs = require('ejs');
 const uuid = require('uuid');
 
 const server = require('../server');
 const po = require('../po');
+const mutil = require('../util');
 
 const wantUrl = 'order';
 
 const router = express.Router();
 let session = undefined;
-let HEAD = '';
-let FOOT = '';
+let HHEAD = '';
+let HFOOT = '';
 
-router.get('/order_add', async (req, res) =>{
-    let arrCartIds =  req.body.cartIds.split(',');
+router.post('/order_add', async (req, res) =>{
+    let arrCartIds = (req.body.cartIds && req.body.cartIds.split(',')) || [];
 
     let carts = [];
     for (let cid of arrCartIds){
         cid = Number.parseInt(cid);
         let cart = await server.Cart.findByCartID(cid);
-        carts.push(cart);
+        carts.push(cart[0]);
     }
+    req.session.orderAdd =  {carts, 'cartIds': req.body.cartIds};
+    // let nHead = ejs.render(HEAD, {'session': req.session});
+    // let nFoot = ejs.render(FOOT, {});
+    
+    // let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
 
-    res.render('order_add',{HEAD, FOOT, carts, cartIds});
+    res.end('ok');
+    // res.render('order_add',{HEAD, FOOT, carts, 'cartIds': req.body.cartIds});
 });
-router.get('/addOrder', async (req, res) =>{
-    let {receiverinfo, cartIds} = req.query;
-    let timestamp = new Date();
+
+router.get('/order_add', async (req, res) =>{
+    // let arrCartIds = (req.body.cartIds && req.body.cartIds.split(',')) || [];
+
+    // let carts = [];
+    // for (let cid of arrCartIds){
+    //     cid = Number.parseInt(cid);
+    //     let cart = await server.Cart.findByCartID(cid);
+    //     carts.push(cart[0]);
+    // }
+    // let nHead = ejs.render(HEAD, {'session': req.session});
+    // let nFoot = ejs.render(FOOT, {});
+    if (!req.session.orderAdd){
+        let carts = [];
+        let cartIds = '';
+        req.session.orderAdd = {
+            carts, cartIds
+        }
+    }
+    
+    let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
+
+    res.render('order_add',{
+        HEAD, FOOT, 'carts': req.session.orderAdd.carts, 
+        'cartIds': req.session.orderAdd.cartIds
+    });
+});
+
+router.use('/addOrder', async (req, res) =>{
+    let {receiverinfo, cartIds} = req.body;
+    let timestamp = mutil.format();
     let uid = req.session.uid;
     if (!uid){
         res.redirect('/');
+        return;
     }
 
     let order = {...po.Order};
@@ -48,18 +85,26 @@ router.get('/showorder', async (req, res) =>{
     let uid = req.session.uid;
     if (!uid){
         res.redirect('/');
+        return;
     }
     let orderInfos = await joinMap(uid);
 
-    res.render('order_list', {HEAD, FOOT, orderInfos, 'username': req.session.uname});
+    // let nHead = ejs.render(HEAD, {'session': req.session});
+    // let nFoot = ejs.render(FOOT, {});
+
+    // res.render('order_list', {'HEAD': nHead, 'FOOT': nFoot, orderInfos, 'username': req.session.uname});
+
+    let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
+
+    res.render('order_list',{HEAD, FOOT, orderInfos, 'username': req.session.uname});
 });
 router.get('/delorder', async (req, res) =>{
-    let id = req.body.id;
+    let id = req.query.id;
     await server.Order.delorder(id);
     res.redirect('/order/showorder');
 });
 router.get('/payorder', async (req, res) =>{
-    let id = req.body.id;
+    let id = req.query.id;
     await server.Order.payorder(id);
 
     let orderitems = await server.Order.orderitem(id);
@@ -76,7 +121,7 @@ router.get('/payorder', async (req, res) =>{
     res.redirect('/order/showorder');
 });
 router.get('/confirmorder', async (req, res) =>{
-    let id = req.body.id;
+    let id = req.query.id;
     await server.Order.confirmorder(id);
     res.redirect('/order/showorder');
 });
@@ -104,7 +149,7 @@ const joinMap = async (uid) =>{
 }
 
 const inject = ({appHead, appFoot}) =>{
-    HEAD = appHead; FOOT = appFoot;
+    HHEAD = appHead; HFOOT = appFoot;
 }
 
 module.exports = {

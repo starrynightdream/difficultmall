@@ -26,5 +26,5 @@ const OrderInfo = {
 }
 
 module.exports = {
-    User, MyCart, Order, OrderItem, OrderInfo
+    User, MyCart, Cart, Order, OrderItem, OrderInfo
 }

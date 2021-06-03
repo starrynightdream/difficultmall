@@ -4,11 +4,14 @@ const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
 
+const mutil = require('./util');
+
 const inpolist = [
     require('./router/index'),
     require('./router/order'),
     require('./router/products'),
     require('./router/user'),
+    require('./router/cart'),
 ];
 
 const app = express();
@@ -45,6 +48,8 @@ app.all('*', (req, res, next)=>{
 
 const appHead= fs.readFileSync( path.join( __dirname, '/view/_head.txt'), 'utf-8');
 const appFoot= fs.readFileSync( path.join( __dirname, '/view/_foot.txt'), 'utf-8');
+
+mutil.injuct(appHead, appFoot);
 
 
 for (let router of inpolist){

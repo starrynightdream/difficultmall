@@ -183,7 +183,7 @@ const proclass = ({category}) =>{
  * @param {Object} Products
  */
 const updatepnum = ({pnum, id}) =>{
-    let sql = `update products set pnum = pnum + ${pnum} where id = ${id}`;
+    let sql = `update products set pnum = pnum + ${pnum} where id = '${id}'`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -209,7 +209,7 @@ const updatepnum = ({pnum, id}) =>{
  */
 const addOrder = ({id, money, receiverinfo, paystate, ordertime, user_id}) =>{
     let sql = `insert into orders(id,money,receiverinfo,paystate,ordertime,user_id)` + 
-        ` values(${id},${money},${receiverinfo},${paystate},${ordertime},${user_id})`;
+        ` values('${id}',${money},'${receiverinfo}',${paystate},'${ordertime}','${user_id}')`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -255,7 +255,7 @@ const findOrderByUserId = ({user_id}) =>{
  * @param {Object} Orders
  */
 const delorder = ({id}) =>{
-    let sql = `delete from orders where id=${id}`;
+    let sql = `delete from orders where id='${id}'`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -278,7 +278,7 @@ const delorder = ({id}) =>{
  * @param {Object} Orders
  */
 const payorder = ({id}) =>{
-    let sql = `update orders set paystate=1 where id=${id}`;
+    let sql = `update orders set paystate=1 where id='${id}'`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -301,7 +301,7 @@ const payorder = ({id}) =>{
  * @param {Object} Orders
  */
 const confirmorder = ({id}) =>{
-    let sql = `update orders set paystate=3 where id=${id}`;
+    let sql = `update orders set paystate=3 where id='${id}'`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -327,7 +327,7 @@ const confirmorder = ({id}) =>{
  */
 const addOrderItem = ({order_id, product_id, buynum}) =>{
     let sql = `insert into orderitem(order_id,product_id,buynum)` + 
-        ` values(${order_id},${product_id},${buynum})`;
+        ` values('${order_id}','${product_id}',${buynum})`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -398,7 +398,7 @@ const delorderitem = ({id}) =>{
  * @param {Object} Cart
  */
 const findCart = ({user_id, pid}) =>{
-    let sql = `select * from cart where user_id=${user_id} and pid=${pid}`;
+    let sql = `select * from cart where user_id='${user_id}' and pid='${pid}'`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -421,7 +421,7 @@ const findCart = ({user_id, pid}) =>{
  * @param {Object} Cart
  */
 const addCart = ({user_id, pid, num}) =>{
-    let sql = `insert into cart(user_id,pid,num) values(${user_id},${pid},${num})`;
+    let sql = `insert into cart(user_id,pid,num) values(${user_id},'${pid}',${num})`;
 
     return new Promise( (resolve, reject) =>{
 
@@ -444,7 +444,7 @@ const addCart = ({user_id, pid, num}) =>{
  * @param {Object} Cart
  */
 const updateCart = ({num, cartID}) =>{
-    let sql = `update cart set num=num+${num} where cartID=${cartID}`;
+    let sql = `update cart set num=${num} where cartID='${cartID}'`;
 
     return new Promise( (resolve, reject) =>{
 

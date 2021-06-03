@@ -6,12 +6,14 @@ const fs = require('fs')
 const express = require('express');
 const ejs = require('ejs');
 
+const mutil = require('../util');
+
 const wantUrl = 'index';
 
 const router = express.Router();
 let session = undefined;
-let HEAD = '';
-let FOOT= '';
+let HHEAD = '';
+let HFOOT= '';
 
 router.get('/login', (req, res) =>{
     // 登录页
@@ -25,11 +27,12 @@ router.get('/regist', (req, res) =>{
     // 注册页
     res.sendFile( path.join( __dirname, '../view/regist.html'));
 });
-router.get('/', (req, res, next) =>{
+router.get('/', async (req, res, next) =>{
     // 主页
-    let nHead = ejs.render(HEAD, {});
-    let nFoot = ejs.render(FOOT, {});
-    res.render('index', {nHead, nFoot});
+    // let nHead = ejs.render(HEAD, {'session': req.session});
+    // let nFoot = ejs.render(FOOT, {});
+    let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
+    res.render('index', {HEAD, FOOT});
     // fs.readFile( path.join( __dirname, '../view/index.html'), 'utf-8', (err, data) =>{
 
     //     if (err){
@@ -42,7 +45,7 @@ router.get('/', (req, res, next) =>{
 });
 
 const inject = ({appHead, appFoot}) =>{
-    HEAD = appHead; FOOT = appFoot;
+    HHEAD = appHead; HFOOT = appFoot;
 }
 
 module.exports = {
