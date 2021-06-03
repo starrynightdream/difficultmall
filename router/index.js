@@ -4,6 +4,7 @@
 const path = require('path');
 const fs = require('fs')
 const express = require('express');
+const ejs = require('ejs');
 
 const wantUrl = 'index';
 
@@ -26,15 +27,18 @@ router.get('/regist', (req, res) =>{
 });
 router.get('/', (req, res, next) =>{
     // 主页
-    fs.readFile( path.join( __dirname, '../view/index.html'), 'utf-8', (err, data) =>{
+    let nHead = ejs.render(HEAD, {});
+    let nFoot = ejs.render(FOOT, {});
+    res.render('index', {nHead, nFoot});
+    // fs.readFile( path.join( __dirname, '../view/index.html'), 'utf-8', (err, data) =>{
 
-        if (err){
-            next();
-            return;
-        }
-        data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
-        res.send(data);
-    });
+    //     if (err){
+    //         next();
+    //         return;
+    //     }
+    //     data = data.replace('{{head}}', HEAD).replace('{{foot}}', FOOT);
+    //     res.send(data);
+    // });
 });
 
 const inject = ({appHead, appFoot}) =>{

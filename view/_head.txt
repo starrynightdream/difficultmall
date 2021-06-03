@@ -70,10 +70,11 @@
 		 </c:if>			 -->
 		</div>	
 	</div>
+	<% let test = 3 %>
 	<div id="line2">
 		<img id="logo" src="/img/head/logo.jpg"/>
 		<input type="text" name=""/>
-		<input type="button" value="搜 索" />
+		<input type="button" value="<%= test %>搜 索" />
 		<span id="goto">
 				<a id="goto_order" href="/order/showorder">我的订单</a>
 				<a id="goto_cart" href="/cart/showcart">我的购物车</a>
