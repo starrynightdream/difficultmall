@@ -73,7 +73,7 @@ router.get('/addCart', async (req, res) =>{
     if (_cart.length == 0){
         await server.Cart.addCart(cart);
     }else{
-        cart.cartID = _cart.cartID;
+        cart.cartID = _cart[0].cartID;
         await server.Cart.updateCart(cart);
     }
 

@@ -36,12 +36,8 @@ router.post('/order_add', async (req, res) =>{
             res.redirect('/index/login');
             return;
         }
-        carts = await server.Cart.showcart( uid);
-        cartIds = []
-        for (let c of carts){
-            cartIds.push(c.cartID);
-        }
-        cartIds.join(',');
+        let {_carts, _cartIds} = await mutil.fixNoThing(req.session);
+        carts = _carts; cartIds = _cartIds;
     }
     req.session.orderAdd =  {carts, cartIds};
     // let nHead = ejs.render(HEAD, {'session': req.session});
@@ -71,8 +67,6 @@ router.get('/order_add', async (req, res) =>{
             carts, cartIds
         }
     }
-
-    console.log(req.session.orderAdd);
     
     let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
 
@@ -83,13 +77,29 @@ router.get('/order_add', async (req, res) =>{
 });
 
 router.use('/addOrder', async (req, res) =>{
-    console.log(req.body);
+
     let {receiverinfo, cartIds} = req.body;
     let timestamp = mutil.format();
     let uid = req.session.uid;
     if (!uid){
         res.redirect('/');
         return;
+    }
+
+    // 检测是否提交的订单为空或历史订单
+    let carts = [];
+    let temp = cartIds.split(',');
+    for (let cid of temp){
+        cid = Number.parseInt(cid);
+        let cart = await server.Cart.findByCartID(cid);
+        if (cart[0])
+            carts.push(cart[0]);
+    }
+
+    // 若是则替换为所有当前订单
+    if (carts.length === 0){
+        let {_carts, _cartIds} = await mutil.fixNoThing(req.session);
+        carts = _carts; cartIds = _cartIds;
     }
 
     let order = {...po.Order};

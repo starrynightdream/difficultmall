@@ -50,6 +50,25 @@ const format = function (date, pattern) {
     return pattern;
 }
 
+const fixNoThing = async (session) =>{
+    let uid = session.uid;
+    let carts = [];
+    let cartIds = '';
+
+    if (!uid){
+        return {carts, cartIds};
+    }
+
+    carts = await server.Cart.showcart( uid);
+    cartIds = []
+    for (let c of carts){
+        cartIds.push(c.cartID);
+    }
+    cartIds =  cartIds.join(',');
+
+    return {_carts: carts, _cartIds: cartIds};
+}
+
 module.exports = {
-    getHeadAndFoot, format ,injuct
+    getHeadAndFoot, format ,injuct, fixNoThing
 }
