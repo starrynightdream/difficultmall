@@ -373,7 +373,7 @@ const orderitem = ({order_id}) =>{
  * @param {Object} OrderItem
  */
 const delorderitem = ({id}) =>{
-    let sql = `delete from orderitem where order_id=${id}`;
+    let sql = `delete from orderitem where order_id='${id}'`;
 
     return new Promise( (resolve, reject) =>{
 

@@ -27,6 +27,32 @@ router.post('/delCart', async (req, res) =>{
     let {cartID} = req.body;
     server.Cart.delCart(cartID);
 });
+router.post('/addCart', async (req, res) =>{
+    let uid = req.session.uid;
+    if (!uid){
+        res.redirect('/index/login');
+        return;
+    }
+    let {buyNum, pid} = req.body;
+    buyNum = Number.parseInt(buyNum);
+    if (!buyNum){
+        res.redirect(`/${wantUrl}/showcart`);
+        return;
+    }
+    let cart = {...po.Cart};
+    cart.user_id = uid; cart.num = buyNum; cart.pid = pid;
+
+    let _cart = await server.Cart.findCart(cart);
+
+    if (_cart.length == 0){
+        await server.Cart.addCart(cart);
+    }else{
+        cart.cartID = _cart[0].cartID;
+        await server.Cart.updateCart(cart);
+    }
+
+    res.redirect(`/${wantUrl}/showcart`);
+});
 router.get('/addCart', async (req, res) =>{
     let uid = req.session.uid;
     if (!uid){

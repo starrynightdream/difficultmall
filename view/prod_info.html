@@ -42,7 +42,7 @@
 	  	$buyNumInp.val(parseInt(buyNum)+1);
 	  });
 
-	  getSessionInProdInfo();
+	//   getSessionInProdInfo();
 	
 	});  //文档就绪事件结束
 
@@ -67,29 +67,29 @@
 </head>
 
 <body>
-	{{head}}
+	<%- HEAD %>
 	<div id="warp"> 
 		<div id="left">
 			<div id="left_top">
-				<img id="left_top_img" src="${product.imgurl }"/>
+				<img id="left_top_img" src="<%= product.imgurl %>"/>
 			</div>
 			<div id="left_bottom">
 				<img id="lf_img" src="/img/prodInfo/lf.jpg"/>
-				<img id="mid_img" src="${product.imgurl }" width="60px" height="60px"/>
+				<img id="mid_img" src="<%= product.imgurl %>" width="60px" height="60px"/>
 				<img id="rt_img" src="/img/prodInfo/rt.jpg"/>
 			</div>
 		</div> 
 	<form action="/cart/addCart"  method="post">
 		<div id="right">
 			<div id="right_top">
-				<span id="prod_name">${product.name}<br/></span>
+				<span id="prod_name"><%= product.name %><br/></span>
 				<br>
-				<span id="prod_desc">${product.description}<br/></span>
+				<span id="prod_desc"><%= product.description %><br/></span>
 			</div>
 			<div id="right_middle">
 				<span id="right_middle_span">
 					EasyMall 价：
-				<span id="theprice" class="price_red">￥${product.price }</span>
+				<span id="theprice" class="price_red">￥<%= product.price %></span>
 				<br/>
 			    运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费：满 100 免运费<br />
 			    服&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;务：由EasyMall负责发货，并提供售后服务<br />
@@ -100,13 +100,13 @@
 			 </span>
 			</div>
 			<div id="right_bottom">
-				<input type="hidden" id="pid" name="pid" value="${product.id }"/>
+				<input type="hidden" id="pid" name="pid" value="<%= product.id %>"/>
 				<input class="add_cart_but" type="submit" value=""/>	
 			</div>
 		</div>
 	</form>
 	</div>
-	{{foot}}
+	<%- FOOT %>
 </body>
 
 </html>

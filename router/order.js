@@ -18,14 +18,32 @@ let HFOOT = '';
 
 router.post('/order_add', async (req, res) =>{
     let arrCartIds = (req.body.cartIds && req.body.cartIds.split(',')) || [];
+    let cartIds = req.body.cartIds;
 
     let carts = [];
     for (let cid of arrCartIds){
         cid = Number.parseInt(cid);
         let cart = await server.Cart.findByCartID(cid);
-        carts.push(cart[0]);
+        if (cart[0])
+            carts.push(cart[0]);
     }
-    req.session.orderAdd =  {carts, 'cartIds': req.body.cartIds};
+    // 为场景做特指适应
+    if (carts.length === 0){
+        // 如果出现请求的数据为空或者全错的情况，则对所有商品下单
+        
+        let uid = req.session.uid;
+        if (!uid){
+            res.redirect('/index/login');
+            return;
+        }
+        carts = await server.Cart.showcart( uid);
+        cartIds = []
+        for (let c of carts){
+            cartIds.push(c.cartID);
+        }
+        cartIds.join(',');
+    }
+    req.session.orderAdd =  {carts, cartIds};
     // let nHead = ejs.render(HEAD, {'session': req.session});
     // let nFoot = ejs.render(FOOT, {});
     
@@ -53,6 +71,8 @@ router.get('/order_add', async (req, res) =>{
             carts, cartIds
         }
     }
+
+    console.log(req.session.orderAdd);
     
     let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
 
@@ -63,6 +83,7 @@ router.get('/order_add', async (req, res) =>{
 });
 
 router.use('/addOrder', async (req, res) =>{
+    console.log(req.body);
     let {receiverinfo, cartIds} = req.body;
     let timestamp = mutil.format();
     let uid = req.session.uid;

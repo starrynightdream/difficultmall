@@ -142,8 +142,8 @@
 			});
 			var cartIds=arr.toString();
 			//使用Ajax进行跳转，并带参数
-		$.post("/order/order_add",{"cartIds":cartIds},function(){
-			window.location="/order/order_add?cartIds="+cartIds;
+			$.post("/order/order_add",{"cartIds":cartIds},function(){
+				window.location="/order/order_add?cartIds="+cartIds;
 			});				
 		});
 

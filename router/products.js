@@ -62,7 +62,7 @@ router.get('/prodInfo', async (req, res) =>{
     req.session.product = product;
 
     let {HEAD, FOOT} = await mutil.getHeadAndFoot(req.session);
-    res.render('prod_info', {HEAD, FOOT, 'data': req.session.data});
+    res.render('prod_info', {HEAD, FOOT, 'data': req.session.data, 'product': product});
 
     // fs.readFile( path.join( __dirname, '../view/prod_info.html'), 'utf-8', (err, data) =>{
 

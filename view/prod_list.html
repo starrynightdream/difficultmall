@@ -98,7 +98,7 @@
 		<div id="prod_content">
 			<% for (let prod of data.products) { %>
 				<div class="prod_div">
-					<a href="/prodInfo?pid=<%= prod.id %>" target="_blank">
+					<a href="/productsController/prodInfo?pid=<%= prod.id %>" target="_blank">
 						<img src="<%= prod.imgurl %>"style="border:0;"></img>
 					</a>
 					<div id="prod_name_div">
